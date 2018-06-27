@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //Toast.makeText(MainActivity.this,"Ok Presses",Toast.LENGTH_LONG).show();
                 expenses.remove(position);
                 adapter.notifyDataSetChanged();
+                // new branch
             }
         });
 
