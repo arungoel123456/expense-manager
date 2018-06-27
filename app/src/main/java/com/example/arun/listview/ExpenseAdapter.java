@@ -32,12 +32,22 @@ public class ExpenseAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View output = inflater.inflate(R.layout.expense_row_layout , parent , false);
-        TextView  nameTextView = output.findViewById(R.id.expenseName);
-        TextView  amountTextView = output.findViewById(R.id.expenseAmount);
+        View output = convertView;
+        if(output==null)
+        {
+            output = inflater.inflate(R.layout.expense_row_layout , parent , false);
+            TextView  nameTextView = output.findViewById(R.id.expenseName);
+            TextView  amountTextView = output.findViewById(R.id.expenseAmount);
+            ExpenseViewHolder viewHolder = new ExpenseViewHolder();
+            viewHolder.expense=nameTextView;
+            viewHolder.cost=amountTextView;
+            output.setTag(viewHolder);
+        }
+
+        ExpenseViewHolder viewHolder = (ExpenseViewHolder) output.getTag();
         Expense expense = items.get(position);
-        nameTextView.setText(expense.getExpense());
-        amountTextView.setText(expense.getCost()+"");
+        viewHolder.expense.setText(expense.getExpense());
+        viewHolder.cost.setText(expense.getCost()+"");
         return output;
     }
 }
