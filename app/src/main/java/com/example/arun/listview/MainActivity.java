@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onClick(DialogInterface dialogInterface, int i) {
                 //TODO
             }
+
         });
         AlertDialog dialog = builder.create();
         dialog.show();
