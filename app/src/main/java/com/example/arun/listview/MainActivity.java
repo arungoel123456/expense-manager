@@ -1,12 +1,22 @@
 package com.example.arun.listview;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,10 +40,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ArrayList<Expense> expenses= new ArrayList<>();
     ExpenseAdapter adapter;
 
+    NotificationManager manager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        Intent intent = new Intent(this, MyReciever.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent,0);
+//        long currentTime = System.currentTimeMillis();
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime+5000 , pendingIntent);
+
+
+
+
 
         listview= findViewById(R.id.listview1);
         openHelper = new SqlititeOpenHelper(this);
@@ -48,8 +70,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String time = cursor.getString(cursor.getColumnIndex("time"));
             int id  = cursor.getInt(cursor.getColumnIndex("id"));
 
+            long currentTime = System.currentTimeMillis();
+            String hour= new String();
+            String minutes= new String();
+            int i=0;
+            while(i<time.length() && time.charAt(i)!= ':')
+            {
+                hour=hour + time.charAt(i);
+                i++;
+            }
+            i++;
+            while(i<time.length())
+            {
+                minutes= minutes+ time.charAt(i);
+                i++;
+            }
+            int expenseTime=0;
+            expenseTime = Integer.parseInt(hour) * 3600*1000;
+            expenseTime=expenseTime + Integer.parseInt(minutes)*60*1000;
+            if(expenseTime == currentTime)
+            {
+                Intent intent = new Intent(this, MyReciever.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent,0);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, currentTime+5000 , pendingIntent);
+            }
+
+
+
+
             Expense expense= new Expense(name ,Integer.parseInt(cost) ,date , time );
             expense.setId(id);
+
+
             expenses.add(expense);
         }
 
